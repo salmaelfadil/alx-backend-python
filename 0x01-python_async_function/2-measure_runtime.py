@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Async func"""
-wait_n = __import__('1-concurrent_coroutines').wait_n
 import asyncio
 import time
+wait_n = __import__('1-concurrent_coroutines').wait_n
 
 
-def measure_time(n, max_delay):
+def measure_time(n: int, max_delay: int) -> float:
     """measures execution time"""
     start = time.time()
 
