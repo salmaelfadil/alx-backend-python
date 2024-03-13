@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Test Utils Module"""
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 import unittest
 from parameterized import parameterized
 from typing import Dict, Tuple, Union
@@ -44,3 +44,21 @@ class TestGetJson(unittest.TestCase):
         return_val = get_json(url)
         mock_get.assert_called_once_with(url)
         self.assertEqual(return_val, ex_payload)
+
+
+class TestMemoize(unittest.TestCase):
+    """test class for memoize function"""
+    def test_memoize(self) -> None:
+        """test memoize function"""
+        class TestClass:
+            def a_method(self):
+                return 42
+            @memoize
+            def a_property(self):
+                return self.a_method()
+        with patch.object(TestClass, 'a_method') as obj:
+            test = TestClass()
+            res1 = test.a_property()
+            res2 = test.a_property()
+            obj.assert_called_once()
+
