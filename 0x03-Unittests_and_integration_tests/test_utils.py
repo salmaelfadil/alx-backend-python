@@ -12,22 +12,28 @@ class TestAccessNestedMap(unittest.TestCase):
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
-        ({"a": {"b": 2}}, ("a", "b"), 2)
-            ,])
-    def test_access_nested_map(self, nested_map: Dict, 
-            path: Tuple[str], expected: Union[Dict, int]) -> None:
-            """"acess_nested_map test"""
-            self.assertEqual(access_nested_map(nested_map, path), expected)
-    
+        ({"a": {"b": 2}}, ("a", "b"), 2)])
+    def test_access_nested_map(
+            self,
+            nested_map: Dict,
+            path: Tuple[str],
+            expected: Union[Dict, int]) -> None:
+        """"acess_nested_map test"""
+        self.assertEqual(access_nested_map(nested_map, path), expected)
+
     @parameterized.expand([
         ({}, ("a",), KeyError),
         ({"a": 1}, ("a", "b"), KeyError)
         ])
-    def test_access_nested_map_exception(self, nested_map: Dict,
-            path: Tuple[str], exception: Exception) -> None:
+    def test_access_nested_map_exception(
+            self,
+            nested_map: Dict,
+            path: Tuple[str],
+            exception: Exception) -> None:
         """test exception"""
         with self.assertRaises(exception):
             access_nested_map(nested_map, path)
+
 
 class TestGetJson(unittest.TestCase):
     """test class for get_json function"""
@@ -53,6 +59,7 @@ class TestMemoize(unittest.TestCase):
         class TestClass:
             def a_method(self):
                 return 42
+
             @memoize
             def a_property(self):
                 return self.a_method()
@@ -61,4 +68,3 @@ class TestMemoize(unittest.TestCase):
             res1 = test.a_property()
             res2 = test.a_property()
             obj.assert_called_once()
-
