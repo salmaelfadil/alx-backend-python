@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Test Client Module"""
 import unittest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, PropertyMock, MagicMock
 from parameterized import parameterized, parameterized_class
 from typing import Dict
 from client import GithubOrgClient
@@ -84,17 +84,17 @@ class TestGithubOrgClient(unittest.TestCase):
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integeration test"""
     @classmethod
-    def setupClass(cls) -> None:
+    def setUpClass(cls) -> None:
         """set up method for test"""
         cls.get_patcher = patch('requests.get')
         cls.mock_get = cls.get_patcher.start()
 
-        cls.mock_get.side_effect = MagicMock(
-                side_effect=lambda url: {
+        def side_effect_mock(url):
+            return {
                     'https://api.github.com/orgs/google': cls.org_payload,
                     'https://api.github.com/orgs/google/repos': cls.repos_payload,
                     }[url]
-        )
+        cls.mock_get.side_effect = MagicMock(side_effect=side_effect_mock)
 
     @classmethod
     def tearDownClass(cls) -> None:
