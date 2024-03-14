@@ -51,24 +51,21 @@ class TestGithubOrgClient(unittest.TestCase):
             prop_mock.return_value = "example"
             test = GithubOrgClient("test")
             val = test.public_repos()
-            lis = []
-            for item in mock_payload:
-                lis.append(item["name"])
+            lis = [item["name"] for item in mock_payload]
             self.assertEqual(lis, val)
             prop_mock.assert_called_once()
             mock_get_json.assert_called_once()
 
     @parameterized.expand([
-       ({"license": {"key": "my_license"}}, "my_license", True),
-       ({"license": {"key": "other_license"}}, "my_license", False)
-       ])
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
     def test_has_license(
             self,
-            repo: Dict,
+            repo: Dict[str, str],
             license_key: str,
             expected: bool) -> None:
-        test = GithubOrgClient("test")
-        result = test.has_license(repo, license_key)
+        result = GithubOrgClient.has_license(repo, license_key)
         self.assertEqual(result, expected)
 
 
