@@ -2,9 +2,10 @@
 """Test Client Module"""
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from typing import Dict
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -65,8 +66,37 @@ class TestGithubOrgClient(unittest.TestCase):
     def test_has_license(
             self,
             repo: Dict,
-            key: str,
+            license_key: str,
             expected: bool) -> None:
         test = GithubOrgClient("test")
-        result = test.has_license(repo, key)
+        result = test.has_license(repo, license_key)
         self.assertEqual(result, expected)
+
+
+@parameterized_class([
+    {
+        'org_payload': TEST_PAYLOAD[0][0],
+        'repos_payload': TEST_PAYLOAD[0][1],
+        'expected_repos': TEST_PAYLOAD[0][2],
+        'apache2_repos': TEST_PAYLOAD[0][3],
+    },
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integeration test"""
+    @classmethod
+    def setupClass(cls) -> None:
+        """set up method for test"""
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get = cls.get_patcher.start()
+
+        cls.mock_get.side_effect = MagicMock(
+                side_effect=lambda url: {
+                    'https://api.github.com/orgs/google': cls.org_payload,
+                    'https://api.github.com/orgs/google/repos': cls.repos_payload,
+                    }[url]
+        )
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """tear down method"""
+        cls.get_patcher.stop()
