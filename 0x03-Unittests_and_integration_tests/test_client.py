@@ -42,12 +42,12 @@ class TestGithubOrgClient(unittest.TestCase):
             self,
             mock_get_json) -> None:
         """test for public repos"""
+        mock_payload = [
+                {"name": "string1"},
+                {"name": "string2"}]
         with patch(
                 'client.GithubOrgClient._public_repos_url',
                 new_callable=PropertyMock) as prop_mock:
-            mock_payload = [
-                    {"name": "string1"},
-                    {"name": "string2"}]
             mock_get_json.return_value = mock_payload
             prop_mock.return_value = "example"
             test = GithubOrgClient("test")
