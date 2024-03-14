@@ -25,7 +25,8 @@ class TestGithubOrgClient(unittest.TestCase):
 
     def test_public_repos_url(self) -> None:
         """test for mocking property"""
-        with patch('client.GithubOrgClient.org',
+        with patch(
+                'client.GithubOrgClient.org',
                 new_callable=PropertyMock) as prop_mock:
             prop_mock.return_value = {
                     'repos_url': "https://api.github.com/users/example/repos",
@@ -33,3 +34,25 @@ class TestGithubOrgClient(unittest.TestCase):
             test = GithubOrgClient("example")
             val = test._public_repos_url
             self.assertEqual(prop_mock.return_value['repos_url'], val)
+
+    @patch('client.get_json')
+    def test_public_repos(
+            self,
+            mock_get_json) -> None:
+        """test for public repos"""
+        with patch(
+                'client.GithubOrgClient._public_repos_url',
+                new_callable=PropertyMock) as prop_mock:
+            mock_payload = [
+                    {"name": "string1"},
+                    {"name": "string2"}]
+            mock_get_json.return_value = mock_payload
+            prop_mock.return_value = "example"
+            test = GithubOrgClient("test")
+            val = test.public_repos()
+            lis = []
+            for item in mock_payload:
+                lis.append(item["name"])
+            self.assertEqual(lis, val)
+            prop_mock.assert_called_once()
+            mock_get_json.assert_called_once()
