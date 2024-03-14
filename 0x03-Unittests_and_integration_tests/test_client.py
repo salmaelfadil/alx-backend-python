@@ -90,6 +90,18 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                     }[url]
         cls.mock_get.side_effect = MagicMock(side_effect=side_effect_mock)
 
+    def test_public_repos(self) -> None:
+        """"test method for public_repos"""
+        test = GithubOrgClient("google")
+        repos = test.public_repos()
+        self.assertEqual(repos, self.expected_repos)
+
+    def test_public_repos_with_license(self) -> None:
+        """test method for public_repos with licence"""
+        test = GithubOrgClient("google")
+        repos = test.public_repos(license="apache-2.0")
+        self.assertEqual(repos, self.apache2_repos)
+
     @classmethod
     def tearDownClass(cls) -> None:
         """tear down method"""
