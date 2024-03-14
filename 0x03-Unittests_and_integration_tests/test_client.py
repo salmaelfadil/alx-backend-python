@@ -21,7 +21,8 @@ class TestGithubOrgClient(unittest.TestCase):
         """test for org method"""
         github_client = GithubOrgClient(val)
         github_client.org()
-        mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{val}")
+        mock_get_json.assert_called_once_with(
+                f"https://api.github.com/orgs/{val}")
 
     def test_public_repos_url(self) -> None:
         """test for mocking property"""
